@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Excel Query System</title>
+   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Excel Query System</h1>
+        <p class="subtitle">Upload an Excel file and ask in simple English.</p>
+
+        <div class="card">
+            <form method="POST" enctype="multipart/form-data" class="upload-form">
+                <input type="file" name="file" accept=".xlsx,.xls">
+                <button type="submit">Upload File</button>
+            </form>
+        </div>
+
+        {% if message %}
+            <div class="message">{{ message }}</div>
+        {% endif %}
+
+        {% if columns %}
+            <div class="card">
+                <h3>Detected Columns</h3>
+                <div class="columns-list">
+                    {% for col in columns %}
+                        <span class="tag">{{ col }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+
+        <div class="card">
+            <form method="POST" class="query-form">
+                <input type="text" id="queryBox" name="query" placeholder="Type your query here..." required>
+                <button type="submit">Run Query</button>
+            </form>
+        </div>
+
+        {% if suggestions %}
+        <div class="card">
+            <h3>Query Suggestions (Click to use)</h3>
+            <div class="suggestions">
+                {% for item in suggestions %}
+                    <div class="suggestion-item" onclick="fillQuery('{{ item }}')">
+                        {{ item }}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        {% if error %}
+            <div class="error">{{ error }}</div>
+        {% endif %}
+
+        {% if result %}
+            <div class="card result-card">
+                <h3>Result</h3>
+                <div class="table-wrapper">
+                    {{ result|safe }}
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    <script>
+        function fillQuery(text) {
+            document.getElementById("queryBox").value = text;
+        }
+    </script>
+</body>
+</html>
